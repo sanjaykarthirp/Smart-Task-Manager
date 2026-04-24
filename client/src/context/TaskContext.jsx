@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 
 export const TaskContext = createContext();
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api';
+
 export const TaskProvider = ({ children }) => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -12,7 +14,7 @@ export const TaskProvider = ({ children }) => {
         setLoading(true);
         try {
             const queryParams = new URLSearchParams(filters).toString();
-            const res = await axios.get(`http://127.0.0.1:5000/api/tasks?${queryParams}`);
+            const res = await axios.get(`${API_URL}/tasks?${queryParams}`);
             setTasks(res.data);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to fetch tasks');
@@ -23,7 +25,7 @@ export const TaskProvider = ({ children }) => {
 
     const addTask = async (taskData) => {
         try {
-            const res = await axios.post('http://127.0.0.1:5000/api/tasks', taskData);
+            const res = await axios.post(`${API_URL}/tasks`, taskData);
             setTasks([res.data, ...tasks]);
             toast.success('Task added successfully');
             return true;
@@ -35,7 +37,7 @@ export const TaskProvider = ({ children }) => {
 
     const updateTask = async (id, taskData) => {
         try {
-            const res = await axios.put(`http://127.0.0.1:5000/api/tasks/${id}`, taskData);
+            const res = await axios.put(`${API_URL}/tasks/${id}`, taskData);
             setTasks(tasks.map((task) => (task._id === id ? res.data : task)));
             toast.success('Task updated successfully');
             return true;
@@ -47,7 +49,7 @@ export const TaskProvider = ({ children }) => {
 
     const deleteTask = async (id) => {
         try {
-            await axios.delete(`http://127.0.0.1:5000/api/tasks/${id}`);
+            await axios.delete(`${API_URL}/tasks/${id}`);
             setTasks(tasks.filter((task) => task._id !== id));
             toast.success('Task deleted successfully');
         } catch (error) {

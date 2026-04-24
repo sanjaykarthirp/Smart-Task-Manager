@@ -4,6 +4,8 @@ import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api';
+
 const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -14,7 +16,7 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://127.0.0.1:5000/api/auth/register', { name, email, password });
+            const res = await axios.post(`${API_URL}/auth/register`, { name, email, password });
             login(res.data);
             toast.success('Registration successful!');
             navigate('/');
